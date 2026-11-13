@@ -142,10 +142,11 @@ function wire(skin: HTMLElement) {
   }
 
   // Show the player's own focus ring for keyboard use only, even after taps.
+  // Keys are watched on the whole document, so tabbing in from the page also counts.
   const onPointer = () => skin.setAttribute("data-pointer", "");
   const onKey = () => skin.removeAttribute("data-pointer");
   skin.addEventListener("pointerdown", onPointer);
-  skin.addEventListener("keydown", onKey);
+  document.addEventListener("keydown", onKey, true);
 
   // Hide the broken-image icon if a poster fails to load.
   const posterImg = skin.querySelector<HTMLImageElement>(".ew-poster img");
@@ -167,10 +168,10 @@ function wire(skin: HTMLElement) {
   const syncPip = () => {
     if (!pip || !pipItem) return;
     pipItem.hidden = pip.hasAttribute("hidden");
-    const label = pipItem.querySelector("media-text");
+    // Toggle two translated labels instead of rewriting text, so Video.js keeps translating them.
     const active = pip.hasAttribute("data-pip");
-    label?.setAttribute("token", active ? "pip.exit" : "pip.enter");
-    if (label) label.textContent = active ? "Exit picture-in-picture" : "Enter picture-in-picture";
+    pipItem.querySelector<HTMLElement>(".ew-pip-enter")?.toggleAttribute("hidden", active);
+    pipItem.querySelector<HTMLElement>(".ew-pip-exit")?.toggleAttribute("hidden", !active);
   };
 
   // Open the menu just above the dock (clearing any timeline row) and keep it inside the picture.
@@ -203,7 +204,7 @@ function wire(skin: HTMLElement) {
 
   return () => {
     skin.removeEventListener("pointerdown", onPointer);
-    skin.removeEventListener("keydown", onKey);
+    document.removeEventListener("keydown", onKey, true);
     posterImg?.removeEventListener("error", onPosterError);
     posterImg?.removeEventListener("load", onPosterLoad);
     window.removeEventListener("scroll", onScroll, { capture: true });

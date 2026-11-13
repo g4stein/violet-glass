@@ -12,7 +12,7 @@ The layout follows the player's own width, not the window:
 | --- | --- |
 | 900px and up (desktop) | Full-width timeline on top. Volume and time on the left, back 10 / play / forward 10 in the middle, PiP, captions, settings and fullscreen on the right. |
 | 480–899px (tablet) | Back / play / forward as large glass orbs over the picture, with a one-row pill dock: time, timeline, volume, captions, settings, fullscreen. |
-| Under 480px (phone) | Smaller orbs (34/44px) and a slim two-row dock (about 54px) so most of the film stays visible. Icons are 18px but tap areas stay about 44px. Settings opens as a sheet over the picture. |
+| Under 480px (phone) | Smaller orbs (34/44px) and a slim two-row dock (about 54px) so most of the film stays visible. Icons are 18px but tap areas stay about 44px. Settings opens as a compact menu just above the dock. |
 
 Settings holds speed, quality, subtitle language (every caption or subtitle track the video has, plus Off), loop and picture-in-picture. Interface labels follow the browser language (20 Video.js locales, with right-to-left layout for Arabic, Hebrew and Persian).
 
