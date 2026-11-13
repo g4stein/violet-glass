@@ -5,7 +5,7 @@
  * (the challenge's Mux bonus). The reel's source file is public/reel/violet-glass-reel.mp4.
  * A `?playbackId=` URL parameter overrides it for quick tests.
  */
-export const MUX_PLAYBACK_ID = "";
+export const MUX_PLAYBACK_ID = "yeQWe3SKqMnvJa00QnqnFGV4en8rP7cM6ozLrK6XUn1w";
 
 export interface Track {
   kind: "subtitles" | "chapters";
