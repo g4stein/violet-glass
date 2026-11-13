@@ -163,17 +163,12 @@
             <span data-part="hint" class="ew-menu-hint"></span>
             <media-icon family="violet" name="chevron" class="ew-icon ew-chevron"></media-icon>
           </media-menu-item>
-          <media-menu-item commandfor="{id}-lang" class="ew-menu-item">
-            <media-icon family="violet" name="language" class="ew-icon"></media-icon>
-            <span>Language</span>
-            <span class="ew-menu-hint ew-lang-hint"></span>
+          <media-menu-item commandfor="{id}-subs" class="ew-menu-item">
+            <media-icon family="violet" name="captions-off" class="ew-icon"></media-icon>
+            <media-text token="menu.subtitles">Subtitles</media-text>
+            <span data-part="hint" class="ew-menu-hint"></span>
             <media-icon family="violet" name="chevron" class="ew-icon ew-chevron"></media-icon>
           </media-menu-item>
-          <media-menu-checkbox-item class="ew-menu-item ew-caption-toggle">
-            <media-icon family="violet" name="captions-off" class="ew-icon"></media-icon>
-            <media-text token="menu.captions">Captions</media-text>
-            <span class="ew-switch" aria-hidden="true"></span>
-          </media-menu-checkbox-item>
           <media-menu-checkbox-item class="ew-menu-item ew-loop-toggle">
             <media-icon family="violet" name="loop" class="ew-icon"></media-icon>
             <span>Loop</span>
@@ -215,12 +210,19 @@
           </media-quality-radio-group>
         </media-menu-content>
 
-        <media-menu-content id="{id}-lang" class="ew-menu-content">
+        <media-menu-content id="{id}-subs" class="ew-menu-content">
           <media-menu-item class="ew-menu-back">
             <media-icon family="violet" name="chevron" class="ew-icon ew-back-icon"></media-icon>
-            <span>Language</span>
+            <media-text token="menu.subtitles">Subtitles</media-text>
           </media-menu-item>
-          <media-menu-radio-group class="ew-menu-group ew-lang-group" value="en"></media-menu-radio-group>
+          <media-captions-radio-group class="ew-menu-group">
+            <template>
+              <media-menu-radio-item class="ew-menu-item">
+                <span data-part="label"></span>
+                <media-menu-item-indicator class="ew-check"><media-icon family="violet" name="check" class="ew-icon"></media-icon></media-menu-item-indicator>
+              </media-menu-radio-item>
+            </template>
+          </media-captions-radio-group>
         </media-menu-content>
       </media-menu>
     </media-controls-content>

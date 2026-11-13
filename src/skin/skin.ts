@@ -1,6 +1,7 @@
 import "./styles/video/base.css";
 import "./styles/themes/violet.css";
 import "./skin.css";
+import "./player";
 
 import "@videojs/html/i18n";
 import "@videojs/html/ui/container";
@@ -43,10 +44,10 @@ import "@videojs/html/ui/menu";
 import "@videojs/html/ui/menu-content";
 import "@videojs/html/ui/menu-item";
 import "@videojs/html/ui/menu-checkbox-item";
-import "@videojs/html/ui/menu-radio-group";
 import "@videojs/html/ui/menu-radio-item";
 import "@videojs/html/ui/menu-item-indicator";
 import "@videojs/html/ui/quality-radio-group";
+import "@videojs/html/ui/captions-radio-group";
 import "@videojs/html/ui/playback-rate-radio-group";
 import "@videojs/html/ui/hotkey";
 import "@videojs/html/ui/gesture";
@@ -63,25 +64,20 @@ import template from "./skin.html?raw";
 
 registerIcons("violet", violetIcons);
 
-/** Languages offered in Settings. Each has a Video.js locale pack. */
-export const LANGUAGES = ["en", "az", "tr", "ru", "uk", "de", "fr", "es", "it", "pt-BR", "ar", "hi", "ja", "ko", "zh"];
+/** Video.js locale packs the interface can pick from the browser language. */
+const LOCALES = ["en", "az", "tr", "ru", "uk", "de", "fr", "es", "it", "pt-BR", "pt", "ar", "he", "fa", "hi", "ja", "ko", "zh", "nl", "pl"];
 const RTL = new Set(["ar", "he", "fa", "ur"]);
-const STORAGE_KEY = "violet-glass:lang";
 
-const nativeName = (code: string) => {
-  const name = new Intl.DisplayNames([code], { type: "language" }).of(code) ?? code;
-  return name.charAt(0).toLocaleUpperCase(code) + name.slice(1);
-};
-const escapeHtml = (text: string) =>
-  text.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
-
-const languageItems = LANGUAGES.map(
-  (code) =>
-    `<media-menu-radio-item value="${code}" class="ew-menu-item" lang="${code}">` +
-    `<span>${escapeHtml(nativeName(code))}</span>` +
-    `<media-menu-item-indicator class="ew-check"><media-icon family="violet" name="check" class="ew-icon"></media-icon></media-menu-item-indicator>` +
-    `</media-menu-radio-item>`,
-).join("");
+/** The interface language that matches the browser, or English. */
+export function browserLocale(): string {
+  for (const wanted of navigator.languages ?? [navigator.language]) {
+    const exact = LOCALES.find((code) => code.toLowerCase() === wanted.toLowerCase());
+    if (exact) return exact;
+    const base = LOCALES.find((code) => code === wanted.split("-")[0]);
+    if (base) return base;
+  }
+  return "en";
+}
 
 let counter = 0;
 
@@ -91,52 +87,27 @@ let counter = 0;
  */
 export function renderSkin(mediaHtml: string): string {
   const id = `ew${++counter}`;
-  return template
-    .replaceAll("{id}", id)
-    .replace("<!-- Add a compatible media component here. -->", mediaHtml)
-    .replace('value="en"></media-menu-radio-group>', `value="en">${languageItems}</media-menu-radio-group>`);
-}
-
-export function savedLanguage(): string {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved && LANGUAGES.includes(saved)) return saved;
-  } catch {
-    /* Storage can be blocked; fall back to the browser language. */
-  }
-  const browser = navigator.language;
-  return LANGUAGES.find((code) => code === browser) ?? LANGUAGES.find((code) => code === browser.split("-")[0]) ?? "en";
+  return template.replaceAll("{id}", id).replace("<!-- Add a compatible media component here. -->", mediaHtml);
 }
 
 type Checkable = HTMLElement & { checked: boolean };
-type ValueGroup = HTMLElement & { value: string };
 
 function wire(skin: HTMLElement) {
-  const q = <T extends Element = HTMLElement>(selector: string) => skin.querySelector<T & HTMLElement>(selector);
-  const media = () => q<HTMLMediaElement>("video, mux-video, hls-video, hlsjs-video, native-hls-video");
-  const captions = q("media-captions-button");
+  const q = (selector: string) => skin.querySelector<HTMLElement>(selector);
+  const media = () => skin.querySelector<HTMLMediaElement>("video, mux-video, hls-video, hlsjs-video, native-hls-video");
   const pip = q("media-pip-button");
-  const captionToggle = q<Checkable>(".ew-caption-toggle") as Checkable | null;
-  const loopToggle = q<Checkable>(".ew-loop-toggle") as Checkable | null;
+  const loopToggle = q(".ew-loop-toggle") as Checkable | null;
   const pipItem = q(".ew-pip-toggle");
-  const langGroup = q<ValueGroup>(".ew-lang-group") as ValueGroup | null;
-  const langHint = q(".ew-lang-hint");
   const gear = q(".ew-gear");
   const menu = q(".ew-menu");
 
-  // Captions: the menu switch drives the real captions button so both stay in sync.
-  const captionsOn = () => captions?.hasAttribute("data-active") ?? false;
-  const syncCaptions = () => {
-    if (!captions || !captionToggle) return;
-    if (captionToggle.checked !== captionsOn()) captionToggle.checked = captionsOn();
-    const unavailable = captions.getAttribute("data-availability") === "unavailable" || captions.hasAttribute("hidden");
-    captionToggle.toggleAttribute("data-unavailable", unavailable);
-  };
-  captionToggle?.addEventListener("checked-change", () =>
-    queueMicrotask(() => {
-      if (captionToggle.checked !== captionsOn()) captions?.click();
-    }),
-  );
+  // Interface language follows the browser when the page doesn't set one on <media-i18n>.
+  const provider = skin.closest("media-i18n");
+  if (provider && !provider.hasAttribute("lang")) {
+    const locale = browserLocale();
+    provider.setAttribute("lang", locale);
+    skin.setAttribute("dir", RTL.has(locale) ? "rtl" : "ltr");
+  }
 
   // Loop has no stock control, so set it on the media element.
   loopToggle?.addEventListener("checked-change", () =>
@@ -157,31 +128,13 @@ function wire(skin: HTMLElement) {
     if (label) label.textContent = active ? "Exit picture-in-picture" : "Enter picture-in-picture";
   };
 
-  // Language: switch the nearest i18n provider and flip direction for right-to-left locales.
-  const applyLanguage = (code: string) => {
-    const provider = skin.closest("media-i18n");
-    if (provider) provider.setAttribute("lang", code);
-    else skin.setAttribute("lang", code);
-    skin.setAttribute("dir", RTL.has(code) ? "rtl" : "ltr");
-    if (langHint) langHint.textContent = nativeName(code);
-    if (langGroup && langGroup.value !== code) langGroup.value = code;
-    try {
-      localStorage.setItem(STORAGE_KEY, code);
-    } catch {
-      /* ignore */
-    }
-  };
-  langGroup?.addEventListener("value-change", () => queueMicrotask(() => applyLanguage(langGroup.value)));
-  applyLanguage(savedLanguage());
-
-  // Keep the menu inside the picture above the dock.
+  // Keep the menu inside the picture above the dock; on phones it covers the picture.
   const fitMenu = () => {
     if (!gear || !menu) return;
     const frame = skin.getBoundingClientRect();
     const button = gear.getBoundingClientRect();
     skin.style.setProperty("--ew-menu-max-height", `${Math.max(120, button.top - frame.top - 20)}px`);
     skin.style.setProperty("--ew-menu-max-width", `${Math.max(0, frame.width - 24)}px`);
-    // Phone sheet: cover the picture, inset by 6px.
     menu.style.setProperty("--ew-sheet-top", `${frame.top + 6}px`);
     menu.style.setProperty("--ew-sheet-left", `${frame.left + 6}px`);
     menu.style.setProperty("--ew-sheet-width", `${frame.width - 12}px`);
@@ -193,17 +146,13 @@ function wire(skin: HTMLElement) {
   window.addEventListener("scroll", onScroll, { passive: true, capture: true });
 
   const watcher = new MutationObserver(() => {
-    syncCaptions();
     syncPip();
     fitMenu();
   });
-  for (const el of [captions, pip]) {
-    if (el) watcher.observe(el, { attributes: true, attributeFilter: ["data-active", "data-availability", "hidden", "data-pip"] });
-  }
+  if (pip) watcher.observe(pip, { attributes: true, attributeFilter: ["hidden", "data-pip"] });
   if (menu) watcher.observe(menu, { attributes: true, attributeFilter: ["data-open"] });
   const resize = new ResizeObserver(fitMenu);
   resize.observe(skin);
-  syncCaptions();
   syncPip();
   fitMenu();
 

@@ -49,6 +49,16 @@
     border-radius: 0;
   }
 
+  /* Tapping or clicking the picture focuses the player; only show a ring for keyboard focus. */
+  .media-skin[data-theme="violet"]:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  .media-skin[data-theme="violet"]:focus-visible {
+    outline: 2px solid var(--ew-focus);
+    outline-offset: -2px;
+  }
+
   /* ---------- Basics ---------- */
 
   .ew-sr-only {
@@ -701,10 +711,6 @@
     inset-inline-start: 18px;
   }
 
-  .ew-caption-toggle[data-unavailable] {
-    opacity: 0.5;
-  }
-
   /* ---------- Status, buffering, errors ---------- */
 
   .ew-buffer {
@@ -807,10 +813,17 @@
 
   /* ---------- Desktop (player >= 900px) ---------- */
 
+  /*
+   * Container queries can't restyle the container itself, so size tokens for each layout
+   * are set on .ew-content (which holds the dock, orbs and menu) and on the media element.
+   */
   @container player (min-width: 900px) {
-    .media-skin[data-theme="violet"] {
+    .ew-content {
       --ew-edge: 16px;
-      --media-caption-controls-y: -120px;
+    }
+
+    .media-skin[data-controls-visible] :is(video, mux-video) {
+      --media-caption-track-y: -112px;
     }
 
     .ew-center {
@@ -895,47 +908,84 @@
   /* ---------- Phone (player < 480px) ---------- */
 
   @container player (max-width: 479px) {
-    .media-skin[data-theme="violet"] {
-      --ew-edge: 8px;
-      --ew-dock-h: 76px;
-      --ew-orb-skip: 40px;
-      --ew-orb-play: 52px;
-      --ew-icon: 20px;
-      --media-caption-controls-y: -92px;
-      border-radius: var(--media-border-radius, 14px);
+    .ew-content {
+      --ew-edge: 6px;
+      --ew-dock-h: 54px;
+      --ew-orb-skip: 34px;
+      --ew-orb-play: 44px;
+      --ew-icon: 18px;
+    }
+
+    .media-skin[data-controls-visible] :is(video, mux-video) {
+      --media-caption-track-y: -62px;
     }
 
     .ew-center {
-      gap: 16px;
+      gap: 14px;
     }
 
-    .ew-dock {
-      padding: 0 4px 2px 12px;
-      border-radius: 16px;
+    .ew-center .ew-play .ew-icon {
+      width: 50%;
+      height: 50%;
+    }
+
+    .ew-skip-num {
+      font-size: 8px;
+      padding-top: 2px;
+    }
+
+    .ew-content .ew-dock {
+      --ew-btn: 32px;
+      min-height: 0;
+      padding: 0 4px 2px 10px;
+      border-radius: 14px;
       grid-template-columns: auto 1fr auto auto;
       grid-template-areas:
-        "seek seek seek  seek"
+        "seek seek seek   seek"
         "time .    volume right";
       column-gap: 0;
     }
 
+    /* Small icons, but the tap area stays about 44px. */
+    .ew-dock .ew-button::after {
+      content: "";
+      position: absolute;
+      inset: -6px -4px;
+    }
+
+    .ew-center .ew-orb::after {
+      content: "";
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+    }
+
     .ew-seek {
-      padding-inline-end: 8px;
+      padding-inline-end: 6px;
     }
 
     .ew-timeline {
-      height: 30px;
+      height: 18px;
+    }
+
+    .ew-trail {
+      height: 3px;
+    }
+
+    .ew-playhead {
+      width: 10px;
+      height: 10px;
     }
 
     .ew-time {
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .ew-volume,
     .ew-right {
       padding: 0;
       border: 0;
-      gap: 0;
+      gap: 4px;
     }
 
     .ew-volume-slider {
