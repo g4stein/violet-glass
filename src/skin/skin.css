@@ -898,11 +898,6 @@
     .ew-volume-slider {
       width: 80px;
     }
-
-    /* Clear the timeline row that sits above the buttons. */
-    .ew-menu {
-      --media-popover-side-offset: 48px;
-    }
   }
 
   /* ---------- Phone (player < 480px) ---------- */
@@ -992,28 +987,41 @@
       display: none;
     }
 
-    /* Settings becomes a sheet that covers the picture. */
-    /* The menu lives in the top layer, so skin.ts supplies the player's viewport box. */
+    /* Compact popover above the dock; scrolls if the picture is short. */
     .ew-menu {
-      position: fixed !important;
-      top: var(--ew-sheet-top, 8px) !important;
-      left: var(--ew-sheet-left, 8px) !important;
-      right: auto !important;
-      bottom: auto !important;
-      width: var(--ew-sheet-width, calc(100vw - 16px)) !important;
-      height: var(--ew-sheet-height, 60vh) !important;
-      max-width: none;
-      max-height: none;
-      translate: none !important;
+      width: 220px;
       border-radius: 14px;
     }
 
     .ew-menu-content {
-      padding: 6px;
+      padding: 4px;
+      gap: 0;
     }
 
+    /* Tap outside or the gear closes it, so the heading row isn't needed here. */
     .ew-menu-heading {
-      padding-block: 0 2px;
+      display: none;
+    }
+
+    .ew-menu .ew-menu-item,
+    .ew-menu .ew-menu-back {
+      min-height: 38px;
+      gap: 10px;
+      padding: 0 8px;
+      font-size: 13px;
+    }
+
+    .ew-menu .ew-menu-back {
+      margin-bottom: 2px;
+    }
+
+    .ew-menu .ew-menu-item .ew-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .ew-menu .ew-menu-hint {
+      font-size: 12px;
     }
   }
 

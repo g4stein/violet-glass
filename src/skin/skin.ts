@@ -128,17 +128,17 @@ function wire(skin: HTMLElement) {
     if (label) label.textContent = active ? "Exit picture-in-picture" : "Enter picture-in-picture";
   };
 
-  // Keep the menu inside the picture above the dock; on phones it covers the picture.
+  // Open the menu just above the dock (clearing any timeline row) and keep it inside the picture.
+  const dock = q(".ew-dock");
   const fitMenu = () => {
-    if (!gear || !menu) return;
+    if (!gear || !menu || !dock) return;
     const frame = skin.getBoundingClientRect();
     const button = gear.getBoundingClientRect();
-    skin.style.setProperty("--ew-menu-max-height", `${Math.max(120, button.top - frame.top - 20)}px`);
-    skin.style.setProperty("--ew-menu-max-width", `${Math.max(0, frame.width - 24)}px`);
-    menu.style.setProperty("--ew-sheet-top", `${frame.top + 6}px`);
-    menu.style.setProperty("--ew-sheet-left", `${frame.left + 6}px`);
-    menu.style.setProperty("--ew-sheet-width", `${frame.width - 12}px`);
-    menu.style.setProperty("--ew-sheet-height", `${frame.height - 12}px`);
+    const bar = dock.getBoundingClientRect();
+    const gap = 6;
+    menu.style.setProperty("--media-popover-side-offset", `${Math.max(gap, button.top - bar.top + gap)}px`);
+    skin.style.setProperty("--ew-menu-max-height", `${Math.max(80, bar.top - frame.top - gap * 2)}px`);
+    skin.style.setProperty("--ew-menu-max-width", `${Math.max(0, frame.width - 16)}px`);
   };
   const onScroll = () => {
     if (menu?.hasAttribute("data-open")) fitMenu();
