@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Violet Glass reel</title>
+<style>
+  @font-face { font-family: "DM Sans"; font-weight: 400; src: url("../node_modules/@fontsource/dm-sans/files/dm-sans-latin-400-normal.woff2") format("woff2"); }
+  @font-face { font-family: "DM Sans"; font-weight: 600; src: url("../node_modules/@fontsource/dm-sans/files/dm-sans-latin-600-normal.woff2") format("woff2"); }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #070416; font-family: "DM Sans", sans-serif; color: #fff; }
+  #bg { position: absolute; inset: 0; }
+  .layer { position: absolute; inset: 0; }
+  .orb { position: absolute; border-radius: 50%; border: 2px solid #d3bfff80;
+    background: radial-gradient(circle at 30% 15%, #e2d4ffaa, transparent 55%), linear-gradient(145deg, #7a5ae0c0, #33236ed8);
+    box-shadow: inset 0 6px 16px #ffffff55, inset 0 -8px 20px #ec489966, 0 0 60px #c044ff66, 0 30px 60px #0a042088;
+    backdrop-filter: blur(18px); }
+  .orb.play { border-color: #f5d7ffcc; background: radial-gradient(circle at 30% 15%, #f0dcffaa, transparent 50%), linear-gradient(145deg, #8a50ecd0, #6b2fb0d0); }
+  .orb svg { position: absolute; inset: 0; margin: auto; width: 44%; height: 44%; }
+  .slab { position: absolute; border-radius: 40px; border: 2px solid #ffffff55;
+    background: linear-gradient(160deg, #ffffff40, #ffffff10 60%); backdrop-filter: blur(30px) saturate(150%);
+    box-shadow: inset 0 2px 2px #ffffff80, 0 40px 80px #2a0f5a55; }
+  .title { position: absolute; left: 0; right: 0; text-align: center; }
+  .eyebrow { font-size: 30px; letter-spacing: 12px; text-transform: uppercase; font-weight: 600; }
+  .big { font-size: 150px; font-weight: 600; letter-spacing: -4px; line-height: 1; }
+  .mid { font-size: 76px; font-weight: 600; letter-spacing: -2px; line-height: 1.05; }
+  .sub { font-size: 34px; opacity: .85; margin-top: 22px; }
+  .grad { background: linear-gradient(90deg, #f5d0fe, #e879f9 40%, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #sphere { position: absolute; left: 50%; top: 50%; width: 0; height: 0; perspective: 1400px; }
+  #sphere .rig { position: absolute; transform-style: preserve-3d; }
+  #sphere .ring { position: absolute; left: -260px; top: -260px; width: 520px; height: 520px; border-radius: 50%;
+    border: 3px solid #e9b4ffaa; box-shadow: 0 0 24px #d946ef66, inset 0 0 24px #a855f744; }
+  #timeline { position: absolute; left: 240px; right: 240px; height: 10px; border-radius: 10px; background: #ffffff30; overflow: visible; }
+  #timeline .fill { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: linear-gradient(90deg, #9333ea, #ec4899 70%, #f472b6); box-shadow: 0 0 24px #ec4899aa; }
+  #timeline .head { position: absolute; top: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: #fff; box-shadow: 0 0 16px #fff, 0 0 40px 8px #d946efaa; }
+  #devices { position: absolute; inset: 0; }
+  #wipe { position: absolute; inset: -20%; pointer-events: none; mix-blend-mode: screen; }
+</style>
+</head>
+<body>
+<canvas id="bg" width="1920" height="1080"></canvas>
+
+<div class="layer" id="sphere"><div class="rig"></div></div>
+<div class="layer" id="orbs"></div>
+<div class="slab" id="slab"></div>
+<div id="timeline"><div class="fill"></div><div class="head"></div></div>
+<svg id="devices" viewBox="0 0 1920 1080" fill="none" stroke-linecap="round" stroke-linejoin="round"></svg>
+
+<div class="title" id="t1"><div class="eyebrow grad">Video.js v10 skin</div><div class="big">Violet Glass</div></div>
+<div class="title" id="t2"><div class="mid" style="color:#2a0f5a">Readable over<br />every frame</div><div class="sub" style="color:#4c1d95">Dark glass and soft light, even in full daylight.</div></div>
+<div class="title" id="t3"><div class="mid grad">Built for motion</div><div class="sub">A neon timeline, glass orbs and a calm, quiet bar.</div></div>
+<div class="title" id="t4"><div class="mid">One skin.<br /><span class="grad">Every screen.</span></div><div class="sub">Desktop, tablet and phone. Keyboard and touch.</div></div>
+<div class="title" id="t5"><div class="eyebrow grad">Violet Glass</div><div class="sub" style="font-size:30px">violet-glass.vercel.app</div></div>
+
+<div id="wipe"></div>
+
+<script>
+const W = 1920, H = 1080, DURATION = 36;
+const $ = (id) => document.getElementById(id);
+const ctx = $("bg").getContext("2d");
+
+// Seeded random so every render of frame N is identical.
+let seed = 7;
+const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+const stars = Array.from({ length: 420 }, () => ({ x: rand() * W, y: rand() * H, r: rand() * 1.8 + 0.3, p: rand() * 6.28, s: rand() * 0.6 + 0.2 }));
+const bokeh = Array.from({ length: 26 }, () => ({ x: rand() * W, y: rand() * H, r: rand() * 120 + 40, p: rand() * 6.28, hue: rand() }));
+
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const ease = (x) => (x = clamp(x), x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+/** 0 → 1 → 0 window with soft edges: visible between a and b. */
+const win = (t, a, b, fade = 0.8) => ease((t - a) / fade) * (1 - ease((t - (b - fade)) / fade));
+const mix = (a, b, k) => a + (b - a) * k;
+
+// Scene timing (seconds). Matches reel/chapters.vtt.
+const S = { night: [0, 9], day: [9, 18], motion: [18, 27], screens: [27, 36] };
+
+// Orbs
+const orbDefs = [
+  { size: 150, play: false, back: true }, { size: 210, play: true }, { size: 150, play: false },
+  { size: 90 }, { size: 60 }, { size: 120 }, { size: 70 },
+];
+const icons = {
+  play: '<svg viewBox="0 0 24 24"><path d="M9 5.8Q8 5.2 8 6.5V17.5Q8 18.8 9 18.2L19 12.8Q20.5 12 19 11.2Z" fill="#fff"/></svg>',
+  seek: (back) => `<svg viewBox="0 0 24 24" style="${back ? "transform:scaleX(-1)" : ""}" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 7A8 8 0 1 1 12 4H17M14 1L17 4L14 7"/></svg>`,
+};
+const orbs = orbDefs.map((d, i) => {
+  const el = document.createElement("div");
+  el.className = "orb" + (d.play ? " play" : "");
+  el.style.width = el.style.height = d.size + "px";
+  if (i < 3) el.innerHTML = d.play ? icons.play : icons.seek(d.back);
+  $("orbs").append(el);
+  return el;
+});
+
+// Sphere of rings (CSS 3D)
+const rig = document.querySelector("#sphere .rig");
+for (let i = 0; i < 12; i++) {
+  const ring = document.createElement("div");
+  ring.className = "ring";
+  ring.style.transform = `rotateY(${i * 15}deg)`;
+  rig.append(ring);
+}
+for (let i = 1; i < 6; i++) {
+  const ring = document.createElement("div");
+  ring.className = "ring";
+  const lat = (i / 6) * 180 - 90;
+  const scale = Math.cos((lat * Math.PI) / 180);
+  ring.style.transform = `rotateX(90deg) translateZ(${Math.sin((lat * Math.PI) / 180) * 260}px) scale(${scale})`;
+  ring.style.borderColor = "#f0abfc66";
+  rig.append(ring);
+}
+
+// Device outlines (SVG)
+const devices = [
+  { x: 330, y: 400, w: 760, h: 440, r: 26 },
+  { x: 1150, y: 430, w: 330, h: 410, r: 30 },
+  { x: 1540, y: 500, w: 170, h: 340, r: 30 },
+];
+$("devices").innerHTML = devices
+  .map((d) => {
+    const len = 2 * (d.w + d.h);
+    const cx = d.x + d.w / 2, cy = d.y + d.h / 2, s = Math.min(d.w, d.h) * 0.16;
+    return `<g class="dev"><rect x="${d.x}" y="${d.y}" width="${d.w}" height="${d.h}" rx="${d.r}" stroke="url(#dg)" stroke-width="5" stroke-dasharray="${len}" stroke-dashoffset="${len}" data-len="${len}"/>
+      <rect x="${d.x + 18}" y="${d.y + d.h - 18 - s * 0.7}" width="${d.w - 36}" height="${s * 0.7}" rx="${s * 0.35}" fill="#ffffff22" stroke="#ffffff44" stroke-width="2" class="dock"/>
+      <circle cx="${cx}" cy="${cy - s * 0.3}" r="${s * 0.5}" fill="#8a50ec" stroke="#f5d7ff" stroke-width="2" class="dot"/></g>`;
+  })
+  .join("") +
+  `<defs><linearGradient id="dg" x1="0" x2="1"><stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs>`;
+
+function background(t) {
+  const day = win(t, S.day[0] - 0.4, S.day[1] + 0.4, 1.2);
+  // Night base
+  const g = ctx.createRadialGradient(W * 0.3, H * 0.4, 0, W * 0.3, H * 0.4, W * 0.9);
+  g.addColorStop(0, "#2a0f5a"); g.addColorStop(0.45, "#12062e"); g.addColorStop(1, "#05020f");
+  ctx.globalAlpha = 1; ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  const m = ctx.createRadialGradient(W * 0.8, H * 0.7, 0, W * 0.8, H * 0.7, W * 0.6);
+  m.addColorStop(0, "#be185d66"); m.addColorStop(1, "#be185d00");
+  ctx.fillStyle = m; ctx.fillRect(0, 0, W, H);
+  // Stars
+  for (const s of stars) {
+    const tw = 0.55 + 0.45 * Math.sin(t * 2 * s.s + s.p);
+    const x = (s.x - t * 12 * s.s + W) % W;
+    ctx.globalAlpha = tw * (1 - day);
+    ctx.fillStyle = "#fff";
+    ctx.beginPath(); ctx.arc(x, s.y, s.r, 0, 6.283); ctx.fill();
+  }
+  // Day sky
+  if (day > 0) {
+    ctx.globalAlpha = day;
+    const sky = ctx.createLinearGradient(0, 0, 0, H);
+    sky.addColorStop(0, "#fdf4ff"); sky.addColorStop(0.5, "#f5d0fe"); sky.addColorStop(1, "#fbcfe8");
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+    const sun = ctx.createRadialGradient(W * 0.72, H * 0.22, 0, W * 0.72, H * 0.22, 520);
+    sun.addColorStop(0, "#ffffff"); sun.addColorStop(0.35, "#fffbeb"); sun.addColorStop(1, "#fffbeb00");
+    ctx.fillStyle = sun; ctx.fillRect(0, 0, W, H);
+    for (const b of bokeh) {
+      const y = b.y + Math.sin(t * 0.6 + b.p) * 30;
+      const c = ctx.createRadialGradient(b.x, y, 0, b.x, y, b.r);
+      const col = b.hue > 0.5 ? "#ffffff" : "#e9d5ff"; c.addColorStop(0, col + "cc"); c.addColorStop(1, col + "00");
+      ctx.globalAlpha = day * 0.7;
+      ctx.fillStyle = c; ctx.fillRect(b.x - b.r, y - b.r, b.r * 2, b.r * 2);
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+
+function show(el, k, dy = 30) {
+  el.style.opacity = k;
+  el.style.transform = `translateY(${(1 - k) * dy}px)`;
+  el.style.filter = k < 1 ? `blur(${(1 - k) * 14}px)` : "none";
+}
+
+window.render = (t) => {
+  background(t);
+
+  // Titles
+  const t1 = $("t1"); t1.style.top = "330px"; show(t1, win(t, 0.6, S.night[1] - 0.3, 1.2));
+  const t2 = $("t2"); t2.style.top = "150px"; show(t2, win(t, S.day[0] + 0.8, S.day[1] - 0.3));
+  const t3 = $("t3"); t3.style.top = "180px"; show(t3, win(t, S.motion[0] + 0.6, S.motion[1] - 0.3));
+  const t4 = $("t4"); t4.style.top = "90px"; show(t4, win(t, S.screens[0] + 0.5, 33.6));
+  const t5 = $("t5"); t5.style.top = "470px"; show(t5, win(t, 33.8, 36.5));
+
+  // Orbs: transport trio + floating companions
+  const trio = win(t, 1.5, S.day[1] - 0.2, 1.4) + win(t, S.motion[0], S.motion[1] - 0.5);
+  const cy = t < S.day[0] ? 690 : t < S.motion[0] ? 640 : 560;
+  orbs.forEach((el, i) => {
+    const d = orbDefs[i];
+    let x, y, k;
+    if (i < 3) {
+      x = 960 + (i - 1) * 270 - d.size / 2;
+      y = cy - d.size / 2 + Math.sin(t * 1.4 + i) * 10;
+      k = clamp(trio);
+      const pop = d.play ? 1 + 0.04 * Math.sin(t * 3) : 1;
+      el.style.transform = `translate(${x}px, ${y}px) scale(${(0.7 + 0.3 * k) * pop})`;
+    } else {
+      const a = t * (0.15 + i * 0.03) + i * 1.7;
+      x = 960 + Math.cos(a) * (520 + i * 40) - d.size / 2;
+      y = 540 + Math.sin(a * 1.3) * (300 + i * 10) - d.size / 2;
+      k = win(t, 0.2, S.motion[1], 1.5) * 0.9;
+      el.style.transform = `translate(${x}px, ${y}px)`;
+    }
+    el.style.opacity = k;
+  });
+
+  // Glass slab in daylight, behind the text
+  const slabK = win(t, S.day[0] + 0.3, S.day[1] - 0.2, 1);
+  const slab = $("slab");
+  Object.assign(slab.style, { left: "440px", top: `${110 + (1 - slabK) * 60}px`, width: "1040px", height: "380px", opacity: slabK });
+
+  // 3D sphere during "motion"
+  const sk = win(t, S.motion[0] - 0.4, S.motion[1] - 0.2, 1.2);
+  $("sphere").style.opacity = sk;
+  rig.style.transform = `translateY(40px) rotateX(${18 + Math.sin(t * 0.5) * 8}deg) rotateY(${t * 40}deg) scale(${0.6 + 0.4 * sk})`;
+
+  // Neon timeline sweep
+  const tl = $("timeline");
+  const tk = win(t, S.motion[0] + 0.4, S.motion[1] - 0.2);
+  tl.style.top = "880px"; tl.style.opacity = tk;
+  const progress = ease((t - S.motion[0] - 0.6) / 7.6) * 100;
+  tl.querySelector(".fill").style.width = progress + "%";
+  tl.querySelector(".head").style.left = progress + "%";
+
+  // Devices draw in
+  const dk = win(t, S.screens[0], 33.7, 0.8);
+  $("devices").style.opacity = dk;
+  document.querySelectorAll("#devices .dev").forEach((g, i) => {
+    const rect = g.querySelector("rect");
+    const draw = ease((t - S.screens[0] - 0.6 - i * 0.5) / 1.6);
+    rect.setAttribute("stroke-dashoffset", String(Number(rect.dataset.len) * (1 - draw)));
+    const inner = ease((t - S.screens[0] - 1.8 - i * 0.5) / 0.8);
+    g.querySelector(".dock").style.opacity = inner;
+    const dot = g.querySelector(".dot");
+    dot.style.opacity = inner;
+    dot.style.transformOrigin = "center"; dot.style.transformBox = "fill-box";
+    dot.style.transform = `scale(${0.6 + 0.4 * inner + 0.05 * Math.sin(t * 3 + i)})`;
+  });
+
+  // Light wipe on each scene change
+  const cuts = [S.day[0], S.motion[0], S.screens[0]];
+  let wipe = 0, pos = 0;
+  for (const c of cuts) {
+    const k = (t - (c - 0.6)) / 1.2;
+    if (k > 0 && k < 1) { wipe = Math.sin(k * Math.PI); pos = k; }
+  }
+  $("wipe").style.background = `linear-gradient(110deg, transparent ${pos * 100 - 25}%, #f5d0fe${Math.round(wipe * 200).toString(16).padStart(2, "0")} ${pos * 100}%, transparent ${pos * 100 + 25}%)`;
+
+  // Final fade
+  document.body.style.opacity = String(1 - ease((t - 35.2) / 0.8));
+};
+
+window.DURATION = DURATION;
+render(0);
+</script>
+</body>
+</html>
