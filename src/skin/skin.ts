@@ -79,6 +79,29 @@ export function browserLocale(): string {
   return "en";
 }
 
+/** Labels the Video.js locale packs don't cover. */
+const EXTRA_TEXT: Record<string, { loop: string; close: string }> = {
+  az: { loop: "Təkrarla", close: "Parametrləri bağla" },
+  tr: { loop: "Döngü", close: "Ayarları kapat" },
+  ru: { loop: "Повтор", close: "Закрыть настройки" },
+  uk: { loop: "Повтор", close: "Закрити налаштування" },
+  de: { loop: "Wiederholen", close: "Einstellungen schließen" },
+  fr: { loop: "Lecture en boucle", close: "Fermer les paramètres" },
+  es: { loop: "Repetir", close: "Cerrar ajustes" },
+  it: { loop: "Ripeti", close: "Chiudi impostazioni" },
+  pt: { loop: "Repetir", close: "Fechar definições" },
+  "pt-BR": { loop: "Repetir", close: "Fechar configurações" },
+  nl: { loop: "Herhalen", close: "Instellingen sluiten" },
+  pl: { loop: "Zapętl", close: "Zamknij ustawienia" },
+  ar: { loop: "تكرار", close: "إغلاق الإعدادات" },
+  he: { loop: "הפעלה חוזרת", close: "סגירת ההגדרות" },
+  fa: { loop: "تکرار", close: "بستن تنظیمات" },
+  hi: { loop: "दोहराएँ", close: "सेटिंग्स बंद करें" },
+  ja: { loop: "ループ再生", close: "設定を閉じる" },
+  ko: { loop: "반복 재생", close: "설정 닫기" },
+  zh: { loop: "循环播放", close: "关闭设置" },
+};
+
 let counter = 0;
 
 /**
@@ -108,6 +131,28 @@ function wire(skin: HTMLElement) {
     provider.setAttribute("lang", locale);
     skin.setAttribute("dir", RTL.has(locale) ? "rtl" : "ltr");
   }
+
+  // Video.js has no phrases for these two labels, so translate them here.
+  const locale = provider?.getAttribute("lang") ?? "en";
+  const own = EXTRA_TEXT[locale] ?? EXTRA_TEXT[locale.split("-")[0]!];
+  if (own) {
+    const loopLabel = q(".ew-loop-toggle > span:not(.ew-switch)");
+    if (loopLabel) loopLabel.textContent = own.loop;
+    q(".ew-close")?.setAttribute("aria-label", own.close);
+  }
+
+  // Show the player's own focus ring for keyboard use only, even after taps.
+  const onPointer = () => skin.setAttribute("data-pointer", "");
+  const onKey = () => skin.removeAttribute("data-pointer");
+  skin.addEventListener("pointerdown", onPointer);
+  skin.addEventListener("keydown", onKey);
+
+  // Hide the broken-image icon if a poster fails to load.
+  const posterImg = skin.querySelector<HTMLImageElement>(".ew-poster img");
+  const onPosterError = () => posterImg?.setAttribute("data-broken", "");
+  const onPosterLoad = () => posterImg?.removeAttribute("data-broken");
+  posterImg?.addEventListener("error", onPosterError);
+  posterImg?.addEventListener("load", onPosterLoad);
 
   // Loop has no stock control, so set it on the media element.
   loopToggle?.addEventListener("checked-change", () =>
@@ -157,6 +202,10 @@ function wire(skin: HTMLElement) {
   fitMenu();
 
   return () => {
+    skin.removeEventListener("pointerdown", onPointer);
+    skin.removeEventListener("keydown", onKey);
+    posterImg?.removeEventListener("error", onPosterError);
+    posterImg?.removeEventListener("load", onPosterLoad);
     window.removeEventListener("scroll", onScroll, { capture: true });
     watcher.disconnect();
     resize.disconnect();

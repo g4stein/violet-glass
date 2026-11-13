@@ -59,6 +59,11 @@
     outline-offset: -2px;
   }
 
+  /* Browsers can still report :focus-visible after a tap; skin.ts marks pointer use. */
+  .media-skin[data-theme="violet"][data-pointer]:focus-visible {
+    outline: none;
+  }
+
   /* ---------- Basics ---------- */
 
   .ew-sr-only {
@@ -118,9 +123,11 @@
     }
   }
 
+  /* Light ring plus a dark halo, so focus shows over both bright and dark video. */
   .media-skin :focus-visible {
     outline: 2px solid var(--ew-focus);
     outline-offset: 2px;
+    box-shadow: 0 0 0 5px #1a0b3acc;
   }
 
   /* Icon state swaps */
@@ -212,6 +219,10 @@
   .ew-poster {
     position: absolute;
     inset: 0;
+  }
+
+  .ew-poster img[data-broken] {
+    visibility: hidden;
   }
 
   .ew-poster img {
@@ -800,8 +811,17 @@
     margin-bottom: 6px;
   }
 
+  .ew-dialog media-dialog-description {
+    display: block;
+    color: #e4dcf5;
+    line-height: 1.5;
+  }
+
   .ew-dialog-close {
+    display: inline-grid;
+    place-items: center;
     margin-top: 16px;
+    min-width: 88px;
     min-height: 40px;
     padding: 0 16px;
     border-radius: 10px;
@@ -1005,7 +1025,7 @@
 
     .ew-menu .ew-menu-item,
     .ew-menu .ew-menu-back {
-      min-height: 38px;
+      min-height: 40px;
       gap: 10px;
       padding: 0 8px;
       font-size: 13px;
