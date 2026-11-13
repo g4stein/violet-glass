@@ -9,14 +9,18 @@ const collection = reels();
 const details: Record<string, { title: string; tag: string; note: string }> = {
   dark: { title: "Cosmic Dawn", tag: "Documentary", note: "Cosmic Dawn trailer · NASA" },
   bright: { title: "Big Buck Bunny", tag: "Animation", note: "Big Buck Bunny · © Blender Foundation · CC BY 3.0" },
-  mine: { title: "My film", tag: "Mux", note: "Hosted on Mux." },
+  reel: {
+    title: "Violet Glass reel",
+    tag: "Original · Mux",
+    note: "Original motion piece made for this skin, hosted on Mux. Subtitles in English, Azerbaijani and Japanese.",
+  },
 };
 
 function mount(reel: Reel, index: number) {
-  const chapters = reel.chapters
-    ? `<track kind="chapters" label="Chapters" srclang="en" src="${reel.chapters}" default>`
-    : "";
-  const media = `<mux-video src="${streamUrl(reel)}" playsinline crossorigin preload="metadata">${chapters}</mux-video>`;
+  const tracks = (reel.tracks ?? [])
+    .map((t) => `<track kind="${t.kind}" label="${t.label}" srclang="${t.srclang}" src="${t.src}"${t.kind === "chapters" ? " default" : ""}>`)
+    .join("");
+  const media = `<mux-video src="${streamUrl(reel)}" playsinline crossorigin preload="metadata">${tracks}</mux-video>`;
   const player = document.createElement("violet-player");
   player.setAttribute("poster", posterUrl(reel));
   player.innerHTML = renderSkin(media);
@@ -24,7 +28,7 @@ function mount(reel: Reel, index: number) {
   provider.append(player);
   stage.replaceChildren(provider);
 
-  const info = details[reel.id] ?? details.mine!;
+  const info = details[reel.id] ?? details.dark!;
   document.getElementById("film-title")!.textContent = info.title;
   document.getElementById("film-tag")!.textContent = info.tag;
   document.getElementById("film-note")!.textContent = info.note;
@@ -62,7 +66,7 @@ function radioGroup(host: HTMLElement, labels: string[], onSelect: (index: numbe
 
 const chooseFilm = radioGroup(
   document.getElementById("films")!,
-  collection.map((reel) => (details[reel.id] ?? details.mine!).title),
+  collection.map((reel) => (details[reel.id] ?? details.dark!).title),
   (index) => mount(collection[index]!, index),
 );
 chooseFilm(0);
