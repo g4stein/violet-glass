@@ -12,9 +12,11 @@ The layout follows the player's own width, not the window:
 | --- | --- |
 | 900px and up (desktop) | Full-width timeline on top. Volume and time on the left, back 10 / play / forward 10 in the middle, PiP, captions, settings and fullscreen on the right. |
 | 480–899px (tablet) | Back / play / forward as large glass orbs over the picture, with a one-row pill dock: time, timeline, volume, captions, settings, fullscreen. |
-| Under 480px (phone) | The same orbs, smaller. The dock has two rows so the timeline gets the full width for scrubbing. Settings opens as a sheet over the picture. |
+| Under 480px (phone) | Smaller orbs (34/44px) and a slim two-row dock (about 54px) so most of the film stays visible. Icons are 18px but tap areas stay about 44px. Settings opens as a sheet over the picture. |
 
-Settings holds speed, quality, captions, loop, picture-in-picture and the interface language (15 Video.js locales, including Azerbaijani and right-to-left Arabic). The chosen language is remembered.
+Settings holds speed, quality, subtitle language (every caption or subtitle track the video has, plus Off), loop and picture-in-picture. Interface labels follow the browser language (20 Video.js locales, with right-to-left layout for Arabic, Hebrew and Persian).
+
+Fullscreen on Android rotates the phone to landscape and unlocks on exit (Video.js orientation lock). iPhone Safari has no element fullscreen or orientation lock API, so it uses the native iOS video player in fullscreen.
 
 ## Accessibility
 
@@ -40,6 +42,7 @@ index.html               showcase page
 src/skin/skin.html       skin markup (Video.js v10 HTML components)
 src/skin/skin.css        skin styles and responsive layouts
 src/skin/skin.ts         component imports, icons, settings wiring, renderSkin()
+src/skin/player.ts       <violet-player>: video features + orientation lock
 src/skin/icons.ts        original SVG icon set
 src/skin/styles/         Video.js scaffold base styles and theme tokens
 src/showcase/            demo page script, styles and media list
@@ -48,11 +51,10 @@ src/showcase/            demo page script, styles and media list
 Use the skin in any page:
 
 ```ts
-import "@videojs/html/video/player";
 import "@videojs/html/media/mux-video";
-import { renderSkin } from "./src/skin/skin";
+import { renderSkin } from "./src/skin/skin"; // also defines <violet-player>
 
-const player = document.createElement("video-player");
+const player = document.createElement("violet-player");
 player.innerHTML = renderSkin('<mux-video src="https://stream.mux.com/PLAYBACK_ID.m3u8" playsinline></mux-video>');
 document.body.append(player);
 ```

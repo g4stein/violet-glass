@@ -1,4 +1,3 @@
-import "@videojs/html/video/player";
 import "@videojs/html/media/mux-video";
 import { renderSkin } from "../skin/skin";
 import { reels, posterUrl, streamUrl, type Reel } from "./media";
@@ -18,7 +17,7 @@ function mount(reel: Reel, index: number) {
     ? `<track kind="chapters" label="Chapters" srclang="en" src="${reel.chapters}" default>`
     : "";
   const media = `<mux-video src="${streamUrl(reel)}" playsinline crossorigin preload="metadata">${chapters}</mux-video>`;
-  const player = document.createElement("video-player");
+  const player = document.createElement("violet-player");
   player.setAttribute("poster", posterUrl(reel));
   player.innerHTML = renderSkin(media);
   const provider = document.createElement("media-i18n");
@@ -79,5 +78,14 @@ const chooseSize = radioGroup(
   sizes.map((size) => size.label),
   (index) => stage.style.setProperty("--stage-width", sizes[index]!.width),
 );
-const screen = window.innerWidth;
-chooseSize(screen < 640 ? 2 : screen < 1100 ? 1 : 0);
+const sizeFor = (width: number) => (width < 640 ? 2 : width < 1100 ? 1 : 0);
+let autoSize = sizeFor(window.innerWidth);
+chooseSize(autoSize);
+
+// Re-pick when the screen changes size class, e.g. a phone rotating to landscape.
+window.addEventListener("resize", () => {
+  const next = sizeFor(window.innerWidth);
+  if (next === autoSize) return;
+  autoSize = next;
+  chooseSize(next);
+});
