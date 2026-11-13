@@ -303,6 +303,12 @@
     visibility: hidden;
   }
 
+  /* Get the orbs out of the way of the scrub preview. */
+  .media-skin:has(.ew-timeline:is([data-pointing], [data-dragging])) .ew-center {
+    opacity: 0;
+    pointer-events: none;
+  }
+
   /* ---------- Dock (tablet default: one row) ---------- */
 
   .ew-dock {
@@ -475,9 +481,44 @@
     text-align: center;
   }
 
-  .ew-preview-card img {
-    max-width: 160px;
+  /* The thumbnail scales its sprite tile to these limits; sized per layout below. */
+  .ew-preview-card media-slider-thumbnail {
+    display: block;
+    min-width: 0;
+    max-width: var(--ew-thumb-w, 160px);
+    max-height: var(--ew-thumb-h, 90px);
     border-radius: 8px;
+    overflow: hidden;
+  }
+
+  @container player (min-width: 900px) {
+    .ew-preview-card {
+      --ew-thumb-w: 192px;
+      --ew-thumb-h: 108px;
+    }
+  }
+
+  @container player (max-width: 479px) {
+    .ew-preview {
+      bottom: calc(100% + 6px);
+    }
+
+    .ew-preview-card {
+      --ew-thumb-w: 96px;
+      --ew-thumb-h: 54px;
+      gap: 3px;
+      padding: 4px;
+      border-radius: 10px;
+      font-size: 11px;
+    }
+
+    .ew-preview-text media-time-slider-chapter-title {
+      font-size: 10px;
+      max-width: 120px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   .ew-preview-text {
