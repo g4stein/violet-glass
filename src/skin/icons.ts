@@ -41,7 +41,6 @@ export const violetIcons = {
   check: icon('<path d="M5 12L10 17L20 7"/>'),
   speed: icon('<path d="M4.5 17A8.5 8.5 0 1 1 19.5 17"/><path d="M12 13L16 8.5"/><circle cx="12" cy="13" r="1.2" fill="currentColor"/>'),
   quality: icon('<path d="M4 7H20M4 12H20M4 17H20"/><circle cx="9" cy="7" r="2" fill="currentColor"/><circle cx="15" cy="12" r="2" fill="currentColor"/><circle cx="7" cy="17" r="2" fill="currentColor"/>'),
-  language: icon('<circle cx="12" cy="12" r="9"/><path d="M3 12H21M12 3C9.5 6 9.5 18 12 21M12 3C14.5 6 14.5 18 12 21"/>'),
   loop: icon('<path d="M17 3L20 6L17 9M4 12V10A4 4 0 0 1 8 6H20M7 21L4 18L7 15M20 12V14A4 4 0 0 1 16 18H4"/>'),
   close: icon('<path d="M6 6L18 18M18 6L6 18"/>'),
   spinner: icon('<path d="M12 3A9 9 0 1 1 3 12"/>'),
