@@ -2,10 +2,10 @@
  * Films the showcase can load.
  *
  * MUX_PLAYBACK_ID is the public playback ID of the Violet Glass reel hosted on our own Mux account
- * (the challenge's Mux bonus). The reel's source file is public/reel/violet-glass-reel.mp4.
+ * (the challenge's Mux bonus). The reel's source file is public/reel/violet-glass-reel-v2.mp4.
  * A `?playbackId=` URL parameter overrides it for quick tests.
  */
-export const MUX_PLAYBACK_ID = "yeQWe3SKqMnvJa00QnqnFGV4en8rP7cM6ozLrK6XUn1w";
+export const MUX_PLAYBACK_ID = "RmXUkN00iHvu5ucJBbyUCmIbI7P87kbbOY73tFBVVCzk";
 
 export interface Track {
   kind: "subtitles" | "chapters";
