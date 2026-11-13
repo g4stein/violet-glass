@@ -1,0 +1,273 @@
+<media-container class="media-skin ew-player" data-theme="violet" data-preset="video">
+  <!-- Add a compatible media component here. -->
+
+  <media-poster class="ew-poster"><img alt="" decoding="async" /></media-poster>
+
+  <media-error-dialog>
+    <media-dialog-backdrop class="ew-dialog-backdrop"></media-dialog-backdrop>
+    <media-dialog-popup class="ew-dialog">
+      <media-dialog-title></media-dialog-title>
+      <media-dialog-description></media-dialog-description>
+      <media-dialog-close class="ew-dialog-close"></media-dialog-close>
+    </media-dialog-popup>
+  </media-error-dialog>
+
+  <media-controls>
+    <media-controls-backdrop class="ew-scrim"></media-controls-backdrop>
+
+    <media-controls-group class="ew-buffer-group">
+      <media-buffering-indicator class="ew-buffer">
+        <media-icon family="violet" name="spinner" class="ew-icon"></media-icon>
+      </media-buffering-indicator>
+    </media-controls-group>
+
+    <media-controls-content class="ew-content">
+      <media-tooltip-group>
+        <!-- Tablet and phone: glass orbs float over the picture. -->
+        <media-controls-group class="ew-center">
+          <media-seek-button seconds="-10" id="{id}-c-back" class="ew-button ew-orb ew-skip">
+            <media-icon family="violet" name="seek" class="ew-icon ew-backward"></media-icon>
+            <span class="ew-skip-num" aria-hidden="true">10</span>
+          </media-seek-button>
+          <media-play-button id="{id}-c-play" class="ew-button ew-orb ew-play">
+            <media-icon family="violet" name="play" class="ew-icon is-play"></media-icon>
+            <media-icon family="violet" name="pause" class="ew-icon is-pause"></media-icon>
+            <media-icon family="violet" name="restart" class="ew-icon is-restart"></media-icon>
+          </media-play-button>
+          <media-seek-button seconds="10" id="{id}-c-fwd" class="ew-button ew-orb ew-skip">
+            <media-icon family="violet" name="seek" class="ew-icon"></media-icon>
+            <span class="ew-skip-num" aria-hidden="true">10</span>
+          </media-seek-button>
+        </media-controls-group>
+
+        <media-controls-group class="ew-dock">
+          <div class="ew-seek">
+            <media-time-slider thumb-alignment="edge" class="ew-timeline">
+              <media-slider-track class="ew-trail">
+                <media-slider-buffer></media-slider-buffer>
+                <media-slider-fill></media-slider-fill>
+              </media-slider-track>
+              <media-slider-thumb class="ew-playhead"></media-slider-thumb>
+              <media-slider-preview class="ew-preview">
+                <div class="ew-preview-card">
+                  <media-slider-thumbnail><img class="ew-thumbnail-image" alt="" /></media-slider-thumbnail>
+                  <div class="ew-preview-text">
+                    <media-slider-value type="pointer"></media-slider-value>
+                    <media-time-slider-chapter-title></media-time-slider-chapter-title>
+                  </div>
+                </div>
+              </media-slider-preview>
+            </media-time-slider>
+          </div>
+
+          <media-time-group class="ew-time">
+            <media-time type="current"></media-time>
+            <media-time-separator class="ew-time-sep"></media-time-separator>
+            <media-time type="duration" class="ew-time-duration"></media-time>
+          </media-time-group>
+
+          <div class="ew-volume">
+            <media-mute-button id="{id}-mute" class="ew-button ew-mute">
+              <media-icon family="violet" name="volume-off" class="ew-icon is-off"></media-icon>
+              <media-icon family="violet" name="volume-low" class="ew-icon is-low"></media-icon>
+              <media-icon family="violet" name="volume-high" class="ew-icon is-high"></media-icon>
+            </media-mute-button>
+            <media-tooltip trigger="{id}-mute" side="top" class="ew-tooltip">
+              <media-tooltip-label></media-tooltip-label><media-tooltip-shortcut></media-tooltip-shortcut>
+            </media-tooltip>
+            <media-volume-slider class="ew-volume-slider" thumb-alignment="edge">
+              <media-slider-track><media-slider-fill></media-slider-fill></media-slider-track>
+              <media-slider-thumb></media-slider-thumb>
+            </media-volume-slider>
+          </div>
+
+          <!-- Desktop: transport sits in the middle of the bar. -->
+          <div class="ew-inline">
+            <media-seek-button seconds="-10" id="{id}-back" class="ew-button ew-orb ew-skip">
+              <media-icon family="violet" name="seek" class="ew-icon ew-backward"></media-icon>
+              <span class="ew-skip-num" aria-hidden="true">10</span>
+            </media-seek-button>
+            <media-tooltip trigger="{id}-back" side="top" class="ew-tooltip">
+              <media-tooltip-label></media-tooltip-label><media-tooltip-shortcut></media-tooltip-shortcut>
+            </media-tooltip>
+            <media-play-button id="{id}-play" class="ew-button ew-orb ew-play">
+              <media-icon family="violet" name="play" class="ew-icon is-play"></media-icon>
+              <media-icon family="violet" name="pause" class="ew-icon is-pause"></media-icon>
+              <media-icon family="violet" name="restart" class="ew-icon is-restart"></media-icon>
+            </media-play-button>
+            <media-tooltip trigger="{id}-play" side="top" class="ew-tooltip">
+              <media-tooltip-label></media-tooltip-label><media-tooltip-shortcut></media-tooltip-shortcut>
+            </media-tooltip>
+            <media-seek-button seconds="10" id="{id}-fwd" class="ew-button ew-orb ew-skip">
+              <media-icon family="violet" name="seek" class="ew-icon"></media-icon>
+              <span class="ew-skip-num" aria-hidden="true">10</span>
+            </media-seek-button>
+            <media-tooltip trigger="{id}-fwd" side="top" class="ew-tooltip">
+              <media-tooltip-label></media-tooltip-label><media-tooltip-shortcut></media-tooltip-shortcut>
+            </media-tooltip>
+          </div>
+
+          <div class="ew-right">
+            <media-pip-button id="{id}-pip" class="ew-button ew-pip">
+              <media-icon family="violet" name="pip-enter" class="ew-icon is-enter"></media-icon>
+              <media-icon family="violet" name="pip-exit" class="ew-icon is-exit"></media-icon>
+            </media-pip-button>
+            <media-tooltip trigger="{id}-pip" side="top" class="ew-tooltip">
+              <media-tooltip-label></media-tooltip-label><media-tooltip-shortcut></media-tooltip-shortcut>
+            </media-tooltip>
+
+            <media-captions-button id="{id}-cc" class="ew-button ew-captions">
+              <media-icon family="violet" name="captions-off" class="ew-icon is-off"></media-icon>
+              <media-icon family="violet" name="captions-on" class="ew-icon is-on"></media-icon>
+            </media-captions-button>
+            <media-tooltip trigger="{id}-cc" side="top" class="ew-tooltip">
+              <media-tooltip-label></media-tooltip-label><media-tooltip-shortcut></media-tooltip-shortcut>
+            </media-tooltip>
+
+            <button type="button" id="{id}-gear" commandfor="{id}-menu" class="ew-button ew-gear">
+              <media-icon family="violet" name="gear" class="ew-icon"></media-icon>
+              <media-text token="menu.settings" class="ew-sr-only">Settings</media-text>
+            </button>
+            <media-tooltip trigger="{id}-gear" side="top" class="ew-tooltip">
+              <media-text token="menu.settings">Settings</media-text>
+            </media-tooltip>
+
+            <media-fullscreen-button id="{id}-fs" class="ew-button ew-fullscreen">
+              <media-icon family="violet" name="fullscreen-enter" class="ew-icon is-enter"></media-icon>
+              <media-icon family="violet" name="fullscreen-exit" class="ew-icon is-exit"></media-icon>
+            </media-fullscreen-button>
+            <media-tooltip trigger="{id}-fs" side="top" class="ew-tooltip">
+              <media-tooltip-label></media-tooltip-label><media-tooltip-shortcut></media-tooltip-shortcut>
+            </media-tooltip>
+          </div>
+        </media-controls-group>
+      </media-tooltip-group>
+
+      <media-menu id="{id}-menu" class="ew-menu" boundary="container" side="top" align="end">
+        <media-menu-content class="ew-menu-content ew-menu-root">
+          <div class="ew-menu-heading">
+            <media-text token="menu.settings">Settings</media-text>
+            <media-menu-item class="ew-close" aria-label="Close settings">
+              <media-icon family="violet" name="close" class="ew-icon"></media-icon>
+            </media-menu-item>
+          </div>
+          <media-menu-item commandfor="{id}-speed" class="ew-menu-item">
+            <media-icon family="violet" name="speed" class="ew-icon"></media-icon>
+            <media-text token="menu.speed">Speed</media-text>
+            <span data-part="hint" class="ew-menu-hint"></span>
+            <media-icon family="violet" name="chevron" class="ew-icon ew-chevron"></media-icon>
+          </media-menu-item>
+          <media-menu-item commandfor="{id}-quality" class="ew-menu-item">
+            <media-icon family="violet" name="quality" class="ew-icon"></media-icon>
+            <media-text token="menu.quality">Quality</media-text>
+            <span data-part="hint" class="ew-menu-hint"></span>
+            <media-icon family="violet" name="chevron" class="ew-icon ew-chevron"></media-icon>
+          </media-menu-item>
+          <media-menu-item commandfor="{id}-lang" class="ew-menu-item">
+            <media-icon family="violet" name="language" class="ew-icon"></media-icon>
+            <span>Language</span>
+            <span class="ew-menu-hint ew-lang-hint"></span>
+            <media-icon family="violet" name="chevron" class="ew-icon ew-chevron"></media-icon>
+          </media-menu-item>
+          <media-menu-checkbox-item class="ew-menu-item ew-caption-toggle">
+            <media-icon family="violet" name="captions-off" class="ew-icon"></media-icon>
+            <media-text token="menu.captions">Captions</media-text>
+            <span class="ew-switch" aria-hidden="true"></span>
+          </media-menu-checkbox-item>
+          <media-menu-checkbox-item class="ew-menu-item ew-loop-toggle">
+            <media-icon family="violet" name="loop" class="ew-icon"></media-icon>
+            <span>Loop</span>
+            <span class="ew-switch" aria-hidden="true"></span>
+          </media-menu-checkbox-item>
+          <media-menu-item class="ew-menu-item ew-pip-toggle">
+            <media-icon family="violet" name="pip-enter" class="ew-icon"></media-icon>
+            <media-text token="pip.enter">Enter picture-in-picture</media-text>
+          </media-menu-item>
+        </media-menu-content>
+
+        <media-menu-content id="{id}-speed" class="ew-menu-content">
+          <media-menu-item class="ew-menu-back">
+            <media-icon family="violet" name="chevron" class="ew-icon ew-back-icon"></media-icon>
+            <media-text token="menu.speed">Speed</media-text>
+          </media-menu-item>
+          <media-playback-rate-radio-group class="ew-menu-group">
+            <template>
+              <media-menu-radio-item class="ew-menu-item">
+                <span data-part="label"></span>
+                <media-menu-item-indicator class="ew-check"><media-icon family="violet" name="check" class="ew-icon"></media-icon></media-menu-item-indicator>
+              </media-menu-radio-item>
+            </template>
+          </media-playback-rate-radio-group>
+        </media-menu-content>
+
+        <media-menu-content id="{id}-quality" class="ew-menu-content">
+          <media-menu-item class="ew-menu-back">
+            <media-icon family="violet" name="chevron" class="ew-icon ew-back-icon"></media-icon>
+            <media-text token="menu.quality">Quality</media-text>
+          </media-menu-item>
+          <media-quality-radio-group class="ew-menu-group">
+            <template>
+              <media-menu-radio-item class="ew-menu-item">
+                <span data-part="label"></span>
+                <media-menu-item-indicator class="ew-check"><media-icon family="violet" name="check" class="ew-icon"></media-icon></media-menu-item-indicator>
+              </media-menu-radio-item>
+            </template>
+          </media-quality-radio-group>
+        </media-menu-content>
+
+        <media-menu-content id="{id}-lang" class="ew-menu-content">
+          <media-menu-item class="ew-menu-back">
+            <media-icon family="violet" name="chevron" class="ew-icon ew-back-icon"></media-icon>
+            <span>Language</span>
+          </media-menu-item>
+          <media-menu-radio-group class="ew-menu-group ew-lang-group" value="en"></media-menu-radio-group>
+        </media-menu-content>
+      </media-menu>
+    </media-controls-content>
+  </media-controls>
+
+  <media-hotkey keys="Space" action="togglePaused"></media-hotkey>
+  <media-hotkey keys="k" action="togglePaused"></media-hotkey>
+  <media-hotkey keys="m" action="toggleMuted"></media-hotkey>
+  <media-hotkey keys="ArrowLeft" action="seekStep"></media-hotkey>
+  <media-hotkey keys="ArrowRight" action="seekStep"></media-hotkey>
+  <media-hotkey keys="j" action="seekStep"></media-hotkey>
+  <media-hotkey keys="l" action="seekStep"></media-hotkey>
+  <media-hotkey keys="ArrowUp" action="volumeStep"></media-hotkey>
+  <media-hotkey keys="ArrowDown" action="volumeStep"></media-hotkey>
+  <media-hotkey keys="f" action="toggleFullscreen"></media-hotkey>
+  <media-hotkey keys="c" action="toggleSubtitles"></media-hotkey>
+  <media-hotkey keys="i" action="togglePictureInPicture"></media-hotkey>
+  <media-hotkey keys="0-9" action="seekToPercent"></media-hotkey>
+  <media-hotkey keys="Home" action="seekToPercent" value="0"></media-hotkey>
+  <media-hotkey keys="End" action="seekToPercent" value="100"></media-hotkey>
+  <media-hotkey keys="&gt;" action="speedUp"></media-hotkey>
+  <media-hotkey keys="&lt;" action="speedDown"></media-hotkey>
+
+  <media-gesture type="tap" action="togglePaused" pointer="mouse" region="center"></media-gesture>
+  <media-gesture type="tap" action="toggleControls" pointer="touch"></media-gesture>
+  <media-gesture type="doubletap" action="seekStep" region="left"></media-gesture>
+  <media-gesture type="doubletap" action="toggleFullscreen" region="center"></media-gesture>
+  <media-gesture type="doubletap" action="seekStep" region="right"></media-gesture>
+
+  <media-status-announcer class="ew-sr-only"></media-status-announcer>
+
+  <div class="ew-indicators" aria-hidden="true">
+    <media-volume-indicator class="ew-status">
+      <media-icon family="violet" name="volume-high" class="ew-icon"></media-icon>
+      <media-volume-indicator-fill><media-volume-indicator-value></media-volume-indicator-value></media-volume-indicator-fill>
+    </media-volume-indicator>
+    <media-seek-indicator class="ew-status">
+      <media-icon family="violet" name="seek" class="ew-icon"></media-icon>
+      <media-seek-indicator-value></media-seek-indicator-value>
+    </media-seek-indicator>
+    <media-status-indicator class="ew-status ew-feedback" actions="toggleFullscreen,toggleSubtitles,togglePictureInPicture">
+      <media-icon family="violet" name="fullscreen-enter" class="ew-icon ew-fb-fullscreen"></media-icon>
+      <media-icon family="violet" name="fullscreen-exit" class="ew-icon ew-fb-exit-fullscreen"></media-icon>
+      <media-icon family="violet" name="captions-on" class="ew-icon ew-fb-captions-on"></media-icon>
+      <media-icon family="violet" name="captions-off" class="ew-icon ew-fb-captions-off"></media-icon>
+      <media-icon family="violet" name="pip-enter" class="ew-icon ew-fb-pip"></media-icon>
+      <media-icon family="violet" name="pip-exit" class="ew-icon ew-fb-exit-pip"></media-icon>
+    </media-status-indicator>
+  </div>
+</media-container>

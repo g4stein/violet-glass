@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#070416" />
+    <title>Violet Glass · Video.js v10 skin</title>
+    <meta name="description" content="Violet Glass: a floating violet glass skin for the Video.js v10 player." />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <main>
+      <header class="top">
+        <div>
+          <p class="eyebrow">Video.js v10 skin</p>
+          <h1>Violet Glass</h1>
+        </div>
+        <div id="size-switch" class="pills" role="radiogroup" aria-label="Player size"></div>
+      </header>
+
+      <section class="stage-wrap" aria-label="Video player">
+        <div id="stage" class="stage"></div>
+      </section>
+
+      <div class="film">
+        <div class="film-meta">
+          <span id="film-index">01</span>
+          <h2 id="film-title">Cosmic Dawn</h2>
+          <span id="film-tag" class="tag">Documentary</span>
+        </div>
+        <div id="films" class="pills" role="radiogroup" aria-label="Choose a film"></div>
+      </div>
+      <p id="film-note" class="note" aria-live="polite"></p>
+
+      <section class="about" aria-labelledby="about-title">
+        <h2 id="about-title">Design thinking</h2>
+        <p>
+          Violet Glass treats the controls as objects floating over the film: frosted violet glass, soft rim light and a
+          neon magenta timeline. The glass is dark and blurred enough to stay readable over bright footage. A scrim at
+          the bottom of the frame helps too.
+        </p>
+        <p>
+          The layout follows the player's width. On desktop the timeline runs the full width and play, back and
+          forward sit in the middle of the bar, like most modern players. On tablets and phones those three become large
+          glass orbs over the picture for easy thumb reach, with a compact pill dock below. Speed, quality, captions,
+          loop, picture-in-picture and 15 interface languages, including right-to-left Arabic, all live in Settings.
+        </p>
+        <p>
+          Every control works from the keyboard with a visible focus ring. Touch targets are at least 44px on touch
+          screens, and motion, transparency and contrast follow system preferences.
+        </p>
+      </section>
+
+      <footer>
+        <span>Violet Glass · Video.js v10 · Apache-2.0</span>
+        <span class="keys"><kbd>Space</kbd> Play <kbd>J</kbd><kbd>L</kbd> Seek <kbd>M</kbd> Mute <kbd>C</kbd> Captions <kbd>F</kbd> Fullscreen</span>
+      </footer>
+    </main>
+    <script type="module" src="/src/showcase/main.ts"></script>
+  </body>
+</html>

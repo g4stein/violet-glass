@@ -1,0 +1,45 @@
+@layer base.preset {
+  .media-skin[data-theme="violet"] {
+    --ew-ink: #141321;
+    --ew-surface: #252040;
+    --ew-paper: #faf7ff;
+    --ew-muted: #ded5f2;
+    --ew-lilac: #c3b6ff;
+    --ew-accent: var(--media-accent-color, #e1afff);
+    --ew-line: #ffffff25;
+    --ew-motion: 180ms;
+    --ew-shadow: 0 16px 50px #0005;
+    --media-foreground: var(--ew-paper);
+    --media-background: var(--ew-ink);
+    --media-primary: var(--ew-accent);
+    --media-ring: var(--ew-accent);
+    --media-accent: var(--ew-accent);
+    --media-accent-foreground: var(--ew-ink);
+    --media-popover: var(--ew-surface);
+    --media-popover-foreground: var(--ew-paper);
+    --media-video-border-radius: var(--media-border-radius, 24px);
+    --media-font-family: "DM Sans", system-ui, sans-serif;
+    --media-caption-controls-y: -140px;
+    --media-popup-side-offset: 14px;
+    --media-popover-side-offset: 14px;
+    --media-popover-boundary-offset: 12px;
+    --media-tooltip-side-offset: 12px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .media-skin[data-theme="violet"] {
+      --ew-motion: 0ms;
+    }
+  }
+  @media (forced-colors: active) {
+    .media-skin[data-theme="violet"] {
+      --ew-paper: CanvasText;
+      --ew-muted: CanvasText;
+      --ew-ink: Canvas;
+      --ew-surface: Canvas;
+      --ew-accent: Highlight;
+      --ew-lilac: Highlight;
+      --ew-line: CanvasText;
+      --ew-shadow: none;
+    }
+  }
+}
