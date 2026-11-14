@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Violet Glass demo video</title>
+<style>
+  @font-face { font-family: "DM Sans"; font-weight: 400; src: url("../node_modules/@fontsource/dm-sans/files/dm-sans-latin-400-normal.woff2") format("woff2"); }
+  @font-face { font-family: "DM Sans"; font-weight: 500; src: url("../node_modules/@fontsource/dm-sans/files/dm-sans-latin-500-normal.woff2") format("woff2"); }
+  @font-face { font-family: "DM Sans"; font-weight: 600; src: url("../node_modules/@fontsource/dm-sans/files/dm-sans-latin-600-normal.woff2") format("woff2"); }
+  @font-face { font-family: "DM Sans"; font-weight: 700; src: url("../node_modules/@fontsource/dm-sans/files/dm-sans-latin-700-normal.woff2") format("woff2"); }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1600px; height: 1200px; overflow: hidden; background: #070416; font-family: "DM Sans", sans-serif; color: #fff; }
+  .abs { position: absolute; }
+  #bg { position: absolute; inset: 0; }
+  #grain { position: absolute; inset: 0; opacity: .06; mix-blend-mode: overlay; pointer-events: none; }
+
+  /* Titles: left-aligned editorial block at the top. */
+  .title { position: absolute; left: 80px; top: 72px; width: 1100px; }
+  .eyebrow { font-size: 22px; font-weight: 600; letter-spacing: 7px; text-transform: uppercase;
+    background: linear-gradient(90deg, #f5d0fe, #e879f9 45%, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .head { font-size: 76px; font-weight: 600; letter-spacing: -2.5px; line-height: 1.02; margin-top: 14px; }
+  .sub { font-size: 28px; color: #d9ccff; margin-top: 16px; opacity: .9; letter-spacing: -.2px; }
+  .grad { background: linear-gradient(90deg, #fbe7ff, #f0abfc 40%, #c4b5fd); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .w { display: inline-block; white-space: pre; }
+
+  /* Opening line words, centred. */
+  #open { position: absolute; left: 0; right: 0; top: 470px; text-align: center; font-size: 92px; font-weight: 600; letter-spacing: -3px; }
+
+  /* The magenta timeline line motif. */
+  #line { position: absolute; height: 6px; border-radius: 6px; background: linear-gradient(90deg, #9333ea, #ec4899 70%, #f472b6);
+    box-shadow: 0 0 22px #ec4899cc, 0 0 60px #d946ef88; transform-origin: left center; }
+  #lineHead { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; background: #fff;
+    box-shadow: 0 0 18px #fff, 0 0 46px 10px #e879f9aa; }
+  #streak { position: absolute; top: 0; bottom: 0; width: 420px; pointer-events: none; mix-blend-mode: screen;
+    background: linear-gradient(90deg, transparent, #ec489955 40%, #f5d0fe99 50%, #a855f755 60%, transparent); filter: blur(10px); }
+
+  /* Screens: rounded glass frames holding the recorded player. */
+  .frame { position: absolute; border-radius: 22px; overflow: hidden; background: #070416;
+    box-shadow: 0 0 0 1.5px #d6c4ff40, 0 40px 120px #05011acc, 0 0 140px #a855f733; }
+  .frame img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+  .glare { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 30%, #ffffff14 45%, transparent 60%); }
+
+  /* Devices */
+  .device { position: absolute; background: linear-gradient(160deg, #2a2245, #0d0a1c); border-radius: 46px; padding: 16px;
+    box-shadow: inset 0 0 0 2px #ffffff22, inset 0 2px 1px #ffffff40, 0 50px 120px #05011add, 0 0 120px #a855f740; }
+  .device .screen { position: relative; width: 100%; height: 100%; border-radius: 32px; overflow: hidden; background: #0b0720; }
+  .device .screen img { position: absolute; display: block; }
+  #phone { border-radius: 58px; padding: 14px; }
+  #phone .screen { border-radius: 46px; }
+  .page-mock { position: absolute; left: 22px; right: 22px; }
+  .page-mock .bar { height: 12px; border-radius: 8px; background: #ffffff1a; margin-top: 12px; }
+  .notch { position: absolute; left: 50%; top: 14px; width: 96px; height: 26px; margin-left: -48px; border-radius: 20px; background: #000; }
+
+  /* Cursor and taps */
+  #cursor { position: absolute; width: 30px; height: 30px; margin: -3px 0 0 -4px; filter: drop-shadow(0 4px 8px #0008); }
+  .ripple { position: absolute; border-radius: 50%; border: 2.5px solid #f5d0fe; box-shadow: 0 0 20px #e879f9; pointer-events: none; }
+
+  /* Widgets */
+  .glasspill { position: absolute; display: flex; align-items: center; gap: 16px; padding: 18px 26px; border-radius: 24px;
+    background: linear-gradient(180deg, #554a9ad9, #241a4bec 55%, #2e1f5ced); border: 1px solid #d6c4ff4d;
+    box-shadow: inset 0 1px 1px #ffffff40, 0 20px 60px #05011acc, 0 0 60px #a855f733; font-size: 26px; font-weight: 500; }
+  .key { display: grid; place-items: center; min-width: 110px; height: 74px; padding: 0 22px; border-radius: 16px; font-size: 26px; font-weight: 600;
+    background: linear-gradient(180deg, #4a3f86, #231a48); border: 1px solid #d6c4ff66; box-shadow: inset 0 2px 1px #ffffff40, 0 8px 0 #120b2c, 0 18px 40px #05011acc; }
+  .switch { width: 64px; height: 36px; border-radius: 20px; background: #ffffff26; position: relative; }
+  .switch i { position: absolute; top: 4px; left: 4px; width: 28px; height: 28px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px #0006; }
+  .badge { position: absolute; padding: 26px 34px; border-radius: 28px; text-align: left;
+    background: linear-gradient(180deg, #554a9acc, #241a4be8); border: 1px solid #d6c4ff4d; box-shadow: inset 0 1px 1px #ffffff40, 0 30px 80px #05011acc; }
+  .badge b { display: block; font-size: 40px; font-weight: 600; letter-spacing: -1px; }
+  .badge span { display: block; font-size: 20px; color: #cbbcff; margin-top: 8px; letter-spacing: .3px; }
+
+  /* End card */
+  #end { position: absolute; inset: 0; text-align: center; }
+  #end .logo { position: absolute; left: 0; right: 0; top: 410px; font-size: 150px; font-weight: 700; letter-spacing: -6px; }
+  #end .tag { position: absolute; left: 0; right: 0; top: 600px; font-size: 48px; font-weight: 500; letter-spacing: -1px; }
+  #end .url { position: absolute; left: 0; right: 0; top: 740px; font-size: 30px; color: #e9ddff; letter-spacing: .5px; }
+  #end .credits { position: absolute; left: 0; right: 0; bottom: 60px; font-size: 17px; color: #a99bd6; letter-spacing: .4px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<canvas id="bg" width="1600" height="1200"></canvas>
+<div id="scene"></div>
+<canvas id="grain" width="400" height="300"></canvas>
+<script src="./compose.js"></script>
+</body>
+</html>
